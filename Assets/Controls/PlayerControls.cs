@@ -110,6 +110,34 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""AttackButton"",
+            ""id"": ""3987e3ef-79bb-475b-b627-0ea16351b56c"",
+            ""actions"": [
+                {
+                    ""name"": ""Punch"",
+                    ""type"": ""Button"",
+                    ""id"": ""f4c6947d-8d43-4db1-9633-99db1edae00f"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""0b9157dc-58cb-47a0-a955-c00a3d0e50fb"",
+                    ""path"": ""<Keyboard>/u"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""PlayerControls"",
+                    ""action"": ""Punch"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": [
@@ -132,6 +160,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_Movement_SidestepDown = m_Movement.FindAction("SidestepDown", throwIfNotFound: true);
         m_Movement_Forward = m_Movement.FindAction("Forward", throwIfNotFound: true);
         m_Movement_Backward = m_Movement.FindAction("Backward", throwIfNotFound: true);
+        // AttackButton
+        m_AttackButton = asset.FindActionMap("AttackButton", throwIfNotFound: true);
+        m_AttackButton_Punch = m_AttackButton.FindAction("Punch", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -259,6 +290,52 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         }
     }
     public MovementActions @Movement => new MovementActions(this);
+
+    // AttackButton
+    private readonly InputActionMap m_AttackButton;
+    private List<IAttackButtonActions> m_AttackButtonActionsCallbackInterfaces = new List<IAttackButtonActions>();
+    private readonly InputAction m_AttackButton_Punch;
+    public struct AttackButtonActions
+    {
+        private @PlayerControls m_Wrapper;
+        public AttackButtonActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Punch => m_Wrapper.m_AttackButton_Punch;
+        public InputActionMap Get() { return m_Wrapper.m_AttackButton; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(AttackButtonActions set) { return set.Get(); }
+        public void AddCallbacks(IAttackButtonActions instance)
+        {
+            if (instance == null || m_Wrapper.m_AttackButtonActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_AttackButtonActionsCallbackInterfaces.Add(instance);
+            @Punch.started += instance.OnPunch;
+            @Punch.performed += instance.OnPunch;
+            @Punch.canceled += instance.OnPunch;
+        }
+
+        private void UnregisterCallbacks(IAttackButtonActions instance)
+        {
+            @Punch.started -= instance.OnPunch;
+            @Punch.performed -= instance.OnPunch;
+            @Punch.canceled -= instance.OnPunch;
+        }
+
+        public void RemoveCallbacks(IAttackButtonActions instance)
+        {
+            if (m_Wrapper.m_AttackButtonActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(IAttackButtonActions instance)
+        {
+            foreach (var item in m_Wrapper.m_AttackButtonActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_AttackButtonActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public AttackButtonActions @AttackButton => new AttackButtonActions(this);
     private int m_PlayerControlsSchemeIndex = -1;
     public InputControlScheme PlayerControlsScheme
     {
@@ -274,5 +351,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         void OnSidestepDown(InputAction.CallbackContext context);
         void OnForward(InputAction.CallbackContext context);
         void OnBackward(InputAction.CallbackContext context);
+    }
+    public interface IAttackButtonActions
+    {
+        void OnPunch(InputAction.CallbackContext context);
     }
 }

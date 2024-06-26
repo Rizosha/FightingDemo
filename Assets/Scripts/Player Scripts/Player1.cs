@@ -23,6 +23,8 @@ public class Player1 : MonoBehaviour
     public float sideStepDuration;
     public float sideStepDistance;
 
+    public Animator animator;
+
 
     void Start()
     {
@@ -30,10 +32,13 @@ public class Player1 : MonoBehaviour
         controller = GetComponent<CharacterController>();
         input = new PlayerControls();
         input.Movement.Enable();
+        input.AttackButton.Enable();
 
         //calculate initial angle and direction
         direction = transform.position - player2.position;
         angle = Mathf.Atan2(direction.x, direction.z);
+
+        animator = GetComponent<Animator>();
 
 
         // This is used to play sidestep from input. This ensures that it is only played on the second tap down to "performed" as it can only be used in a += or -= 
@@ -77,6 +82,12 @@ public class Player1 : MonoBehaviour
         {
             forwardMovement = -transform.forward * moveSpeed * Time.deltaTime;
             controller.Move(forwardMovement);
+        }
+
+        if (input.AttackButton.Punch.IsPressed())
+        {
+            animator.SetBool("Punch", true);
+           // animator.SetBool("Punch", false);
         }
 
         // Look at player 2
@@ -143,6 +154,12 @@ public class Player1 : MonoBehaviour
 
         // Use CharacterController to move around player2
         controller.Move(movement);
+    }
+
+
+    void PunchOff()
+    {
+        animator.SetBool("Punch",false);
     }
 
     /*

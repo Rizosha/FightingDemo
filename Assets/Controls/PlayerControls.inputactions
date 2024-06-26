@@ -88,6 +88,34 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "AttackButton",
+            "id": "3987e3ef-79bb-475b-b627-0ea16351b56c",
+            "actions": [
+                {
+                    "name": "Punch",
+                    "type": "Button",
+                    "id": "f4c6947d-8d43-4db1-9633-99db1edae00f",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "0b9157dc-58cb-47a0-a955-c00a3d0e50fb",
+                    "path": "<Keyboard>/u",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "PlayerControls",
+                    "action": "Punch",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": [
