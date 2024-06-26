@@ -588,6 +588,9 @@ MonoBehaviour:
   offset: {x: 0, y: 0, z: 0}
   newPosition: {x: 0, y: 0, z: 0}
   movement: {x: 0, y: 0, z: 0}
+  isDashing: 0
+  dashAngleIncrement: 0.4
+  dashDuration: 0.3
 --- !u!143 &1655789470
 CharacterController:
   m_ObjectHideFlags: 0

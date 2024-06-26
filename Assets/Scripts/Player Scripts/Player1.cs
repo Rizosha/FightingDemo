@@ -21,7 +21,11 @@ public class Player1 : MonoBehaviour
     public Vector3 newPosition;
     public Vector3 movement;
     PlayerControls input;
-    
+
+    public bool isDashing;
+    public float dashAngleIncrement;
+    public float dashDuration;
+
 
     void Start()
     {
@@ -33,6 +37,8 @@ public class Player1 : MonoBehaviour
         //calculate initial angle and direction
         direction = transform.position - player2.position;
         angle = Mathf.Atan2(direction.x, direction.z);
+
+        input.Movement.SidestepUp.performed += ctx => OnSidestepUp();
     }
 
     void Update()
@@ -42,17 +48,28 @@ public class Player1 : MonoBehaviour
         direction = transform.position - player2.position;
         angle = Mathf.Atan2(direction.x, direction.z);
 
+        /*
         // Get input from the user
         if (input.Movement.SidestepUp.IsInProgress())
         {
             // Move clockwise
-            angle += speed * Time.deltaTime;
+            // angle += speed * Time.deltaTime;
+
+            //angle += Mathf.Lerp(angle,(angle + 5f),speed) * Time.deltaTime;
 
             MoveAngle();
 
-            // Use CharacterController to move around player2
-            controller.Move(movement);
         }
+        */
+
+        /*
+        if (input.Movement.SidestepUp.performed && !isDashing)
+        {
+            StartCoroutine(UpDash(dashAngleIncrement));
+        }
+        */
+
+        /*
         if (input.Movement.SidestepDown.IsPressed())
         {
             // Move counterclockwise
@@ -62,6 +79,14 @@ public class Player1 : MonoBehaviour
 
             // Use CharacterController to move around player2
             controller.Move(movement);
+        }
+        */
+
+       
+
+        if (input.Movement.SidestepDown.IsInProgress() && !isDashing)
+        {
+            StartCoroutine(DownDash(dashAngleIncrement));
         }
 
         // Forward and backward movement
@@ -82,11 +107,63 @@ public class Player1 : MonoBehaviour
         transform.LookAt(new Vector3(player2.position.x, transform.position.y, player2.position.z));
     }
 
+     private void OnSidestepUp()
+        {
+            if (!isDashing)
+            {
+                StartCoroutine(UpDash(dashAngleIncrement));
+            }
+        }
+
     private void MoveAngle()
     {
         // Calculate the new position around player2
         offset = new Vector3(Mathf.Sin(angle), 0, Mathf.Cos(angle)) * radius;
         newPosition = player2.position + offset;
         movement = newPosition - transform.position;
+
+
+        // Use CharacterController to move around player2
+        controller.Move(movement);
+    }
+
+    private IEnumerator UpDash(float angleIncrement)
+    {
+        isDashing = true;
+        float startAngle = angle;
+        float targetAngle = angle + angleIncrement;
+        float elapsedTime = 0f;
+
+        while (elapsedTime < dashDuration)
+        {
+            angle = Mathf.Lerp(startAngle, targetAngle, elapsedTime / dashDuration);
+            MoveAngle();
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        angle = targetAngle; // Ensure we reach the exact target angle
+        MoveAngle();
+        isDashing = false;
+    }
+
+    private IEnumerator DownDash(float angleIncrement)
+    {
+        isDashing = true;
+        float startAngle = angle;
+        float targetAngle = angle - angleIncrement;
+        float elapsedTime = 0f;
+
+        while (elapsedTime < dashDuration)
+        {
+            angle = Mathf.Lerp(startAngle, targetAngle, elapsedTime / dashDuration);
+            MoveAngle();
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        angle = targetAngle; // Ensure we reach the exact target angle
+        MoveAngle();
+        isDashing = false;
     }
 }
