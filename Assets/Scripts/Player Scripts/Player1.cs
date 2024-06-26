@@ -10,12 +10,9 @@ public class Player1 : MonoBehaviour
 {
     public CharacterController controller;
     public Transform player2;
-    public Vector3 player1;
-    public GameObject p2;
     Vector3 direction;
     public float radius;
     public float angle = 0;
-    public float speed = 1;
     public float moveSpeed = 2;
     public Vector3 offset;
     public Vector3 newPosition;
@@ -23,8 +20,8 @@ public class Player1 : MonoBehaviour
     PlayerControls input;
 
     public bool isDashing;
-    public float dashAngleIncrement;
-    public float dashDuration;
+    public float sideStepDuration;
+    public float sideStepDistance;
 
 
     void Start()
@@ -38,7 +35,10 @@ public class Player1 : MonoBehaviour
         direction = transform.position - player2.position;
         angle = Mathf.Atan2(direction.x, direction.z);
 
+
+        // This is used to play sidestep from input. This ensures that it is only played on the second tap down to "performed" as it can only be used in a += or -= 
         input.Movement.SidestepUp.performed += ctx => OnSidestepUp();
+        input.Movement.SidestepDown.performed += ctx => OnSidestepDown();
     }
 
     void Update()
@@ -47,6 +47,9 @@ public class Player1 : MonoBehaviour
         radius = Vector3.Distance(player2.transform.position, transform.position);
         direction = transform.position - player2.position;
         angle = Mathf.Atan2(direction.x, direction.z);
+
+        //----------------------------------------------------------------------------------------------
+        //Old move up 
 
         /*
         // Get input from the user
@@ -62,42 +65,15 @@ public class Player1 : MonoBehaviour
         }
         */
 
-        /*
-        if (input.Movement.SidestepUp.performed && !isDashing)
-        {
-            StartCoroutine(UpDash(dashAngleIncrement));
-        }
-        */
-
-        /*
-        if (input.Movement.SidestepDown.IsPressed())
-        {
-            // Move counterclockwise
-            angle -= speed * Time.deltaTime;
-
-            MoveAngle();
-
-            // Use CharacterController to move around player2
-            controller.Move(movement);
-        }
-        */
-
-       
-
-        if (input.Movement.SidestepDown.IsInProgress() && !isDashing)
-        {
-            StartCoroutine(DownDash(dashAngleIncrement));
-        }
-
         // Forward and backward movement
         Vector3 forwardMovement = Vector3.zero;
 
-        if (input.Movement.Forward.IsInProgress())
+        if (input.Movement.Forward.IsInProgress() && !isDashing)
         {
             forwardMovement = transform.forward * moveSpeed * Time.deltaTime;
             controller.Move(forwardMovement);
         }
-        if (input.Movement.Backward.IsInProgress())
+        if (input.Movement.Backward.IsInProgress() && !isDashing)
         {
             forwardMovement = -transform.forward * moveSpeed * Time.deltaTime;
             controller.Move(forwardMovement);
@@ -106,14 +82,57 @@ public class Player1 : MonoBehaviour
         // Look at player 2
         transform.LookAt(new Vector3(player2.position.x, transform.position.y, player2.position.z));
     }
-
+    
      private void OnSidestepUp()
+     {
+        if (!isDashing)
         {
-            if (!isDashing)
-            {
-                StartCoroutine(UpDash(dashAngleIncrement));
-            }
+            // This line ensures that the player only moves a set distance. Before this the player would sidestep different distances based on the radius. 
+            float angleIncrement = sideStepDistance / radius;
+            StartCoroutine(Sidestep(angleIncrement));
         }
+     }
+
+    private void OnSidestepDown()
+    {
+        if (!isDashing)
+        {
+            float angleIncrement = -sideStepDistance / radius;
+            StartCoroutine(Sidestep(angleIncrement));
+        }
+    }
+
+    private IEnumerator Sidestep(float angleIncrement)
+    {
+        // is now dashing
+        isDashing = true;
+
+        //Set angle variable to calculate how far
+        float startAngle = angle;
+        float targetAngle = angle + angleIncrement;
+
+        // Variable for how long has passed
+        float elapsedTime = 0f;
+
+        // 
+        while (elapsedTime < sideStepDuration)
+        {
+            //calculate the angle
+            angle = Mathf.Lerp(startAngle, targetAngle, elapsedTime / sideStepDuration);
+
+            //Move
+            MoveAngle();
+
+            // start timer for sidestep
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        // Ensure we reach the exact target angle
+        angle = targetAngle;
+        MoveAngle();
+        isDashing = false;
+    }
 
     private void MoveAngle()
     {
@@ -122,11 +141,11 @@ public class Player1 : MonoBehaviour
         newPosition = player2.position + offset;
         movement = newPosition - transform.position;
 
-
         // Use CharacterController to move around player2
         controller.Move(movement);
     }
 
+    /*
     private IEnumerator UpDash(float angleIncrement)
     {
         isDashing = true;
@@ -142,7 +161,8 @@ public class Player1 : MonoBehaviour
             yield return null;
         }
 
-        angle = targetAngle; // Ensure we reach the exact target angle
+        // Ensure we reach the exact target angle
+        angle = targetAngle; 
         MoveAngle();
         isDashing = false;
     }
@@ -151,19 +171,28 @@ public class Player1 : MonoBehaviour
     {
         isDashing = true;
         float startAngle = angle;
+
+        // this is the only difference to previous method. Will need refactoring 
         float targetAngle = angle - angleIncrement;
+
         float elapsedTime = 0f;
 
         while (elapsedTime < dashDuration)
         {
+            // smooths movement to stated angle increment. 
             angle = Mathf.Lerp(startAngle, targetAngle, elapsedTime / dashDuration);
+
             MoveAngle();
             elapsedTime += Time.deltaTime;
             yield return null;
         }
 
-        angle = targetAngle; // Ensure we reach the exact target angle
+        // Ensure we reach the exact target angle
         MoveAngle();
+        angle = targetAngle;
         isDashing = false;
     }
+    
+
+    */
 }

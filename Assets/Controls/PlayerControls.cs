@@ -33,7 +33,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""id"": ""644d9b02-e24d-4d26-8e42-eefb7f5b25b1"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
-                    ""interactions"": ""MultiTap(tapTime=0.2)"",
+                    ""interactions"": ""MultiTap"",
                     ""initialStateCheck"": true
                 },
                 {
