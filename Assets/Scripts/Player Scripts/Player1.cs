@@ -92,6 +92,11 @@ public class Player1 : MonoBehaviour
 
         // Look at player 2
         transform.LookAt(new Vector3(player2.position.x, transform.position.y, player2.position.z));
+
+
+       
+
+
     }
     
      private void OnSidestepUp()
