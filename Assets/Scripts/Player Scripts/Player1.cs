@@ -92,6 +92,16 @@ public class Player1 : MonoBehaviour
 
         // Look at player 2
         transform.LookAt(new Vector3(player2.position.x, transform.position.y, player2.position.z));
+
+
+        while(controller.velocity.magnitude == 0)
+        {
+            animator.SetBool("SidestepRight", false);
+            animator.SetBool("SidestepLeft", false);
+        }
+
+
+
     }
     
      private void OnSidestepUp()
@@ -101,6 +111,8 @@ public class Player1 : MonoBehaviour
             // This line ensures that the player only moves a set distance. Before this the player would sidestep different distances based on the radius. 
             float angleIncrement = sideStepDistance / radius;
             StartCoroutine(Sidestep(angleIncrement));
+
+            animator.SetBool("SidestepLeft", true);
         }
      }
 
@@ -110,6 +122,8 @@ public class Player1 : MonoBehaviour
         {
             float angleIncrement = -sideStepDistance / radius;
             StartCoroutine(Sidestep(angleIncrement));
+
+            animator.SetBool("SidestepRight", true);
         }
     }
 
@@ -151,7 +165,8 @@ public class Player1 : MonoBehaviour
         offset = new Vector3(Mathf.Sin(angle), 0, Mathf.Cos(angle)) * radius;
         newPosition = player2.position + offset;
         movement = newPosition - transform.position;
-
+        
+        
         // Use CharacterController to move around player2
         controller.Move(movement);
     }
@@ -160,6 +175,11 @@ public class Player1 : MonoBehaviour
     void PunchOff()
     {
         animator.SetBool("Punch",false);
+    }
+
+    void SideOff()
+    {
+        animator.SetBool("SidestepLeft", false);
     }
 
     /*
