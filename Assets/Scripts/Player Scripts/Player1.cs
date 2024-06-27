@@ -159,8 +159,9 @@ public class Player1 : MonoBehaviour
 
     private void MoveAngle()
     {
+        float currentY = gameObject.transform.position.y;
         // Calculate the new position around player2
-        offset = new Vector3(Mathf.Sin(angle), 0, Mathf.Cos(angle)) * radius;
+        offset = new Vector3(Mathf.Sin(angle), currentY, Mathf.Cos(angle)) * radius;
         newPosition = player2.position + offset;
         movement = newPosition - transform.position;
         
