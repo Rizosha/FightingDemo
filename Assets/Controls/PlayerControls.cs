@@ -116,9 +116,36 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             ""id"": ""3987e3ef-79bb-475b-b627-0ea16351b56c"",
             ""actions"": [
                 {
-                    ""name"": ""Punch"",
+                    ""name"": ""LeftPunch"",
                     ""type"": ""Button"",
                     ""id"": ""f4c6947d-8d43-4db1-9633-99db1edae00f"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""RightPunch"",
+                    ""type"": ""Button"",
+                    ""id"": ""cc33627d-3597-4a44-81cc-16e77cca9b4a"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""LeftKick"",
+                    ""type"": ""Button"",
+                    ""id"": ""890aaec3-2fd5-474f-b67f-46c27afbe6e7"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""RightKick"",
+                    ""type"": ""Button"",
+                    ""id"": ""5723a8b1-c8df-4952-a418-31158fe0d379"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -133,7 +160,40 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""PlayerControls"",
-                    ""action"": ""Punch"",
+                    ""action"": ""LeftPunch"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3927f657-eee3-40c2-9a5e-3fafce114076"",
+                    ""path"": ""<Keyboard>/i"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""RightPunch"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""fa4e2086-327d-4723-9a36-b967371affc4"",
+                    ""path"": ""<Keyboard>/j"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""LeftKick"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d5eef256-723d-40e4-9fb8-7cddd46fb172"",
+                    ""path"": ""<Keyboard>/k"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""RightKick"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -162,7 +222,10 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_Movement_Backward = m_Movement.FindAction("Backward", throwIfNotFound: true);
         // AttackButton
         m_AttackButton = asset.FindActionMap("AttackButton", throwIfNotFound: true);
-        m_AttackButton_Punch = m_AttackButton.FindAction("Punch", throwIfNotFound: true);
+        m_AttackButton_LeftPunch = m_AttackButton.FindAction("LeftPunch", throwIfNotFound: true);
+        m_AttackButton_RightPunch = m_AttackButton.FindAction("RightPunch", throwIfNotFound: true);
+        m_AttackButton_LeftKick = m_AttackButton.FindAction("LeftKick", throwIfNotFound: true);
+        m_AttackButton_RightKick = m_AttackButton.FindAction("RightKick", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -294,12 +357,18 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     // AttackButton
     private readonly InputActionMap m_AttackButton;
     private List<IAttackButtonActions> m_AttackButtonActionsCallbackInterfaces = new List<IAttackButtonActions>();
-    private readonly InputAction m_AttackButton_Punch;
+    private readonly InputAction m_AttackButton_LeftPunch;
+    private readonly InputAction m_AttackButton_RightPunch;
+    private readonly InputAction m_AttackButton_LeftKick;
+    private readonly InputAction m_AttackButton_RightKick;
     public struct AttackButtonActions
     {
         private @PlayerControls m_Wrapper;
         public AttackButtonActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
-        public InputAction @Punch => m_Wrapper.m_AttackButton_Punch;
+        public InputAction @LeftPunch => m_Wrapper.m_AttackButton_LeftPunch;
+        public InputAction @RightPunch => m_Wrapper.m_AttackButton_RightPunch;
+        public InputAction @LeftKick => m_Wrapper.m_AttackButton_LeftKick;
+        public InputAction @RightKick => m_Wrapper.m_AttackButton_RightKick;
         public InputActionMap Get() { return m_Wrapper.m_AttackButton; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -309,16 +378,34 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         {
             if (instance == null || m_Wrapper.m_AttackButtonActionsCallbackInterfaces.Contains(instance)) return;
             m_Wrapper.m_AttackButtonActionsCallbackInterfaces.Add(instance);
-            @Punch.started += instance.OnPunch;
-            @Punch.performed += instance.OnPunch;
-            @Punch.canceled += instance.OnPunch;
+            @LeftPunch.started += instance.OnLeftPunch;
+            @LeftPunch.performed += instance.OnLeftPunch;
+            @LeftPunch.canceled += instance.OnLeftPunch;
+            @RightPunch.started += instance.OnRightPunch;
+            @RightPunch.performed += instance.OnRightPunch;
+            @RightPunch.canceled += instance.OnRightPunch;
+            @LeftKick.started += instance.OnLeftKick;
+            @LeftKick.performed += instance.OnLeftKick;
+            @LeftKick.canceled += instance.OnLeftKick;
+            @RightKick.started += instance.OnRightKick;
+            @RightKick.performed += instance.OnRightKick;
+            @RightKick.canceled += instance.OnRightKick;
         }
 
         private void UnregisterCallbacks(IAttackButtonActions instance)
         {
-            @Punch.started -= instance.OnPunch;
-            @Punch.performed -= instance.OnPunch;
-            @Punch.canceled -= instance.OnPunch;
+            @LeftPunch.started -= instance.OnLeftPunch;
+            @LeftPunch.performed -= instance.OnLeftPunch;
+            @LeftPunch.canceled -= instance.OnLeftPunch;
+            @RightPunch.started -= instance.OnRightPunch;
+            @RightPunch.performed -= instance.OnRightPunch;
+            @RightPunch.canceled -= instance.OnRightPunch;
+            @LeftKick.started -= instance.OnLeftKick;
+            @LeftKick.performed -= instance.OnLeftKick;
+            @LeftKick.canceled -= instance.OnLeftKick;
+            @RightKick.started -= instance.OnRightKick;
+            @RightKick.performed -= instance.OnRightKick;
+            @RightKick.canceled -= instance.OnRightKick;
         }
 
         public void RemoveCallbacks(IAttackButtonActions instance)
@@ -354,6 +441,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     }
     public interface IAttackButtonActions
     {
-        void OnPunch(InputAction.CallbackContext context);
+        void OnLeftPunch(InputAction.CallbackContext context);
+        void OnRightPunch(InputAction.CallbackContext context);
+        void OnLeftKick(InputAction.CallbackContext context);
+        void OnRightKick(InputAction.CallbackContext context);
     }
 }

@@ -94,9 +94,36 @@
             "id": "3987e3ef-79bb-475b-b627-0ea16351b56c",
             "actions": [
                 {
-                    "name": "Punch",
+                    "name": "LeftPunch",
                     "type": "Button",
                     "id": "f4c6947d-8d43-4db1-9633-99db1edae00f",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "RightPunch",
+                    "type": "Button",
+                    "id": "cc33627d-3597-4a44-81cc-16e77cca9b4a",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "LeftKick",
+                    "type": "Button",
+                    "id": "890aaec3-2fd5-474f-b67f-46c27afbe6e7",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "RightKick",
+                    "type": "Button",
+                    "id": "5723a8b1-c8df-4952-a418-31158fe0d379",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -111,7 +138,40 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "PlayerControls",
-                    "action": "Punch",
+                    "action": "LeftPunch",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "3927f657-eee3-40c2-9a5e-3fafce114076",
+                    "path": "<Keyboard>/i",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "RightPunch",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "fa4e2086-327d-4723-9a36-b967371affc4",
+                    "path": "<Keyboard>/j",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "LeftKick",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d5eef256-723d-40e4-9fb8-7cddd46fb172",
+                    "path": "<Keyboard>/k",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "RightKick",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

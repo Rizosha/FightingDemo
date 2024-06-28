@@ -84,11 +84,20 @@ public class Player1 : MonoBehaviour
             controller.Move(forwardMovement);
         }
 
-        if (input.AttackButton.Punch.IsPressed())
+        if (input.AttackButton.LeftPunch.IsPressed())
         {
-            animator.SetBool("Punch", true);
-           // animator.SetBool("Punch", false);
+            animator.SetBool("LeftPunch", true);
+          
         }
+
+
+        if (input.AttackButton.RightKick.IsPressed())
+        {
+            animator.SetBool("RightKick", true);
+            
+        }
+
+
 
         // Look at player 2
         transform.LookAt(new Vector3(player2.position.x, transform.position.y, player2.position.z));
@@ -173,7 +182,7 @@ public class Player1 : MonoBehaviour
 
     void PunchOff()
     {
-        animator.SetBool("Punch",false);
+        animator.SetBool("LeftPunch",false);
     }
 
     void SideOff()
@@ -181,54 +190,5 @@ public class Player1 : MonoBehaviour
         animator.SetBool("SidestepLeft", false);
     }
 
-    /*
-    private IEnumerator UpDash(float angleIncrement)
-    {
-        isDashing = true;
-        float startAngle = angle;
-        float targetAngle = angle + angleIncrement;
-        float elapsedTime = 0f;
 
-        while (elapsedTime < dashDuration)
-        {
-            angle = Mathf.Lerp(startAngle, targetAngle, elapsedTime / dashDuration);
-            MoveAngle();
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
-
-        // Ensure we reach the exact target angle
-        angle = targetAngle; 
-        MoveAngle();
-        isDashing = false;
-    }
-
-    private IEnumerator DownDash(float angleIncrement)
-    {
-        isDashing = true;
-        float startAngle = angle;
-
-        // this is the only difference to previous method. Will need refactoring 
-        float targetAngle = angle - angleIncrement;
-
-        float elapsedTime = 0f;
-
-        while (elapsedTime < dashDuration)
-        {
-            // smooths movement to stated angle increment. 
-            angle = Mathf.Lerp(startAngle, targetAngle, elapsedTime / dashDuration);
-
-            MoveAngle();
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
-
-        // Ensure we reach the exact target angle
-        MoveAngle();
-        angle = targetAngle;
-        isDashing = false;
-    }
-    
-
-    */
 }
